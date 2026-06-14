@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="12" fill="#1E3354"/>
+  <rect x="0" y="60" width="64" height="4" rx="2" fill="#D4921A"/>
+  <!-- Tijeras estilizadas -->
+  <circle cx="22" cy="24" r="7" fill="none" stroke="#D4921A" stroke-width="3"/>
+  <circle cx="42" cy="24" r="7" fill="none" stroke="#D4921A" stroke-width="3"/>
+  <line x1="27" y1="29" x2="37" y2="45" stroke="#D4921A" stroke-width="3" stroke-linecap="round"/>
+  <line x1="37" y1="29" x2="27" y2="45" stroke="#D4921A" stroke-width="3" stroke-linecap="round"/>
+</svg>

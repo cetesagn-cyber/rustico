@@ -1,5 +1,16 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Plus, X, MessageCircle, Bell } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, X, MessageCircle, Bell, List, LayoutGrid } from 'lucide-react';
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+  return isMobile;
+}
 import { api } from '../api/client';
 import { agendaTimeParts, diffAgendaMinutes, formatAgendaFecha, formatAgendaHora } from '../utils/agendaDate';
 
@@ -89,6 +100,8 @@ function waLinkRecordatorio(cita: Cita): string | null {
 }
 
 export default function Agenda() {
+  const isMobile                                = useIsMobile();
+  const [vistaLista, setVistaLista]             = useState(false);
   const [fecha, setFecha]         = useState(new Date());
   const [barberos, setBarberos]   = useState<Barbero[]>([]);
   const [citas, setCitas]         = useState<Cita[]>([]);
@@ -249,18 +262,34 @@ export default function Agenda() {
             </button>
           </div>
 
-          <button
-            type="button"
-            onClick={abrirModal}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              background: 'var(--verde)', border: 'none', borderRadius: 8,
-              padding: '8px 18px', color: '#fff', fontWeight: 600, fontSize: 14,
-              boxShadow: '0 2px 14px rgba(43,87,65,0.45)',
-            }}
-          >
-            <Plus size={15} /> Nueva cita
-          </button>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            {/* Toggle vista lista / grilla en móvil */}
+            <button
+              type="button"
+              title={vistaLista ? 'Ver grilla' : 'Ver lista'}
+              onClick={() => setVistaLista(v => !v)}
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: 'rgba(0,0,0,0.25)', border: '1px solid var(--borde)',
+                borderRadius: 6, padding: '6px 8px', color: 'var(--texto-suave)',
+              }}
+            >
+              {vistaLista ? <LayoutGrid size={16} /> : <List size={16} />}
+            </button>
+
+            <button
+              type="button"
+              onClick={abrirModal}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                background: 'var(--verde)', border: 'none', borderRadius: 8,
+                padding: '8px 18px', color: '#fff', fontWeight: 600, fontSize: 14,
+                boxShadow: '0 2px 14px rgba(43,87,65,0.45)',
+              }}
+            >
+              <Plus size={15} /> {isMobile ? '' : 'Nueva cita'}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -309,11 +338,84 @@ export default function Agenda() {
         </div>
       )}
 
-      {/* Calendario */}
+      {/* Calendario / Lista */}
       <div style={{ flex: 1, overflow: 'auto' }}>
         {cargando ? (
           <div style={{ padding: 60, textAlign: 'center', color: 'var(--texto-suave)' }}>Cargando agenda…</div>
+        ) : (isMobile || vistaLista) ? (
+          /* ── Vista lista móvil ─────────────────────────────────────────── */
+          <div style={{ padding: '12px 8px' }}>
+            {citas.length === 0 ? (
+              <div style={{ padding: 40, textAlign: 'center', color: 'var(--texto-suave)' }}>
+                Sin citas para este día.
+              </div>
+            ) : (
+              [...citas]
+                .sort((a, b) => a.inicio.localeCompare(b.inicio))
+                .map(cita => {
+                  const barbero = barberos.find(b => b.id === cita.barbero_id);
+                  const waLink  = waLinkConfirmacion(cita);
+                  return (
+                    <div key={cita.id} style={{
+                      background: 'var(--superficie)',
+                      border: '1px solid var(--borde)',
+                      borderLeft: `4px solid ${barbero?.color_agenda ?? '#888'}`,
+                      borderRadius: 10,
+                      padding: '14px 16px',
+                      marginBottom: 10,
+                    }}>
+                      {/* Hora + estado */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--verde)' }}>
+                          {formatHora(cita.inicio)} – {formatHora(cita.fin)}
+                        </div>
+                        <span className={`badge badge-${cita.estado}`}>{cita.estado}</span>
+                      </div>
+
+                      {/* Cliente + servicio */}
+                      <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--texto)', marginBottom: 2 }}>
+                        {cita.cliente_nombre || 'Sin cliente'}
+                      </div>
+                      <div style={{ fontSize: 13, color: 'var(--texto-suave)', marginBottom: 10 }}>
+                        {cita.servicio_nombre} · {cita.barbero_nombre}
+                        <span style={{ marginLeft: 8 }}>
+                          {cita.metodo_pago === 'efectivo' ? '💵' : cita.metodo_pago === 'datafono' ? '💳' : '🔀'}
+                        </span>
+                      </div>
+
+                      {/* Precio */}
+                      <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--cobre)', marginBottom: 12 }}>
+                        {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(cita.precio_cop)}
+                      </div>
+
+                      {/* Acciones */}
+                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                        {cita.estado !== 'completada' && (
+                          <button type="button" onClick={() => cambiarEstado(cita.id, 'completada')}
+                            style={{ padding: '8px 14px', borderRadius: 8, border: 'none', background: 'var(--exito)', color: '#fff', fontSize: 13, fontWeight: 600, flex: 1 }}>
+                            ✓ Completar
+                          </button>
+                        )}
+                        {cita.estado !== 'cancelada' && (
+                          <button type="button" onClick={() => cambiarEstado(cita.id, 'cancelada')}
+                            style={{ padding: '8px 14px', borderRadius: 8, border: 'none', background: 'var(--error)', color: '#fff', fontSize: 13, fontWeight: 600, flex: 1 }}>
+                            ✗ Cancelar
+                          </button>
+                        )}
+                        {waLink && (
+                          <a href={waLink} target="_blank" rel="noopener noreferrer"
+                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, background: '#25D366', color: '#fff', fontSize: 13, fontWeight: 600, textDecoration: 'none', flex: 1 }}>
+                            <MessageCircle size={14} /> WA
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })
+            )}
+          </div>
         ) : (
+          /* ── Vista grilla escritorio ───────────────────────────────────── */
           <div style={{ display: 'flex', minWidth: 800 }}>
 
             {/* Columna de horas */}
