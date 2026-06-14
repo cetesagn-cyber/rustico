@@ -1,0 +1,41 @@
+# Dependencias
+node_modules/
+dist/
+
+# Variables de entorno (contienen secretos)
+.env
+.env.local
+*.env.local
+*.env.production
+
+# Base de datos SQLite local
+*.db
+*.db-shm
+*.db-wal
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+coverage/
+.nyc_output/
+
+# WhatsApp auth local
+.wwebjs_auth/
+.wwebjs_cache/
+
+# Build / Vite cache
+build/
+frontend/.vite/
+
+# Claude Code (configuración local del IDE)
+.claude/
+
+# Rustico carpeta legacy
+Rustico/

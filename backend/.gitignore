@@ -1,0 +1,16 @@
+node_modules/
+dist/
+
+# Variables de entorno — NUNCA commitear
+.env
+.env.local
+.env.production
+
+# Base de datos SQLite — contiene datos reales
+*.db
+*.db-shm
+*.db-wal
+
+# Logs
+*.log
+npm-debug.log*
