@@ -113,6 +113,9 @@ async function arrancar() {
   }
 }
 
-arrancar();
+if (process.env.NODE_ENV !== 'test') {
+  arrancar();
+}
 
+export { arrancar };
 export default app;
