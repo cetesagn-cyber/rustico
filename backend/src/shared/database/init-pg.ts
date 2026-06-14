@@ -3,7 +3,7 @@ import path from 'path';
 import bcrypt from 'bcryptjs';
 import { query, execute, closePool, uuidv4 } from './pg.client';
 
-const MIGRATIONS_DIR = path.join(__dirname, '../../../../../database/migrations');
+const MIGRATIONS_DIR = path.join(__dirname, '../../../../database/migrations');
 
 async function aplicarMigraciones() {
   const files = fs.readdirSync(MIGRATIONS_DIR)
