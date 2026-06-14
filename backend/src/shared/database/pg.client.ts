@@ -1,4 +1,4 @@
-import { Pool, PoolClient } from 'pg';
+import { Pool, PoolClient, types } from 'pg';
 import dotenv from 'dotenv';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -8,11 +8,24 @@ if (!process.env.DATABASE_URL) {
   console.warn('⚠️  DATABASE_URL no está configurado.');
 }
 
+// Devuelve TIMESTAMPTZ y TIMESTAMP como strings en lugar de Date objects.
+// La sesión usa timezone='America/Bogota', así el string llega como "YYYY-MM-DD HH:MM:SS-05"
+// y el front-end lo normaliza correctamente a hora local.
+types.setTypeParser(1184, (val: string) => val); // TIMESTAMPTZ
+types.setTypeParser(1114, (val: string) => val); // TIMESTAMP
+types.setTypeParser(1082, (val: string) => val); // DATE → "YYYY-MM-DD"
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
+});
+
+pool.on('connect', (client) => {
+  client.query("SET timezone = 'America/Bogota'", (err) => {
+    if (err) console.error('⚠️  No se pudo fijar timezone:', err.message);
+  });
 });
 
 pool.on('error', (err) => {

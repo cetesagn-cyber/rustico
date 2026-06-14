@@ -136,7 +136,7 @@ export class BarberosService {
       `SELECT COUNT(*) as n FROM agenda WHERE barbero_id = ? AND estado IN ('pendiente','confirmada')`,
       [id],
     );
-    if (citasActivas.n > 0)
+    if (Number(citasActivas.n) > 0)
       throw new Error(`Tiene ${citasActivas.n} cita(s) pendiente(s) o confirmada(s). Cancélalas o deshabílitalo primero.`);
 
     await transaction(async (conn) => {

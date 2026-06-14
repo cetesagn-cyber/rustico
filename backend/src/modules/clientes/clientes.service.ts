@@ -38,7 +38,7 @@ export class ClientesService {
          ${contactoSql}`,
       [filtro, filtro, filtro, filtroSegmento],
     );
-    const total = totalRow?.total ?? 0;
+    const total = Number(totalRow?.total ?? 0);
 
     return { clientes, total, pagina: safePage, totalPaginas: Math.ceil(total / safeLimit) };
   }
@@ -62,10 +62,10 @@ export class ClientesService {
     );
 
     return {
-      total: total?.total ?? 0,
-      conTelefono: conTelefono?.total ?? 0,
-      conEmail: conEmail?.total ?? 0,
-      importadosExcel: importados?.total ?? 0,
+      total: Number(total?.total ?? 0),
+      conTelefono: Number(conTelefono?.total ?? 0),
+      conEmail: Number(conEmail?.total ?? 0),
+      importadosExcel: Number(importados?.total ?? 0),
       porSegmento,
     };
   }

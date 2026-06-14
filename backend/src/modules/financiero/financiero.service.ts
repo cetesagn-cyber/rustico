@@ -81,12 +81,12 @@ export class FinancieroService {
 
     const evolucion = await query<any>(`
       SELECT
-        DATE(inicio)                                                             AS fecha,
+        inicio::date                                                             AS fecha,
         SUM(CASE WHEN estado = 'completada' THEN precio_cop ELSE 0 END)         AS ingresos,
         SUM(CASE WHEN estado = 'completada' THEN 1 ELSE 0 END)                  AS citas
       FROM agenda
       WHERE inicio >= ? AND inicio <= ?
-      GROUP BY DATE(inicio)
+      GROUP BY inicio::date
       ORDER BY fecha ASC
     `, [ini, fin]);
 
@@ -314,7 +314,7 @@ export class FinancieroService {
       JOIN   usuarios u ON u.id = b.usuario_id
       LEFT JOIN adelantos a ON a.barbero_id = b.id
              AND a.fecha >= ? AND a.fecha <= ? AND a.estado = 'activo'
-      WHERE  b.activo = 1
+      WHERE  b.activo = TRUE
       GROUP  BY b.id, u.nombre
       HAVING COALESCE(SUM(a.monto_cop), 0) > 0
       ORDER  BY u.nombre

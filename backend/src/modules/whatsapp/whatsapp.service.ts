@@ -147,12 +147,12 @@ export class WhatsAppService extends EventEmitter {
   }
 
   // ── Obtener barberos con WhatsApp activo ────────────────────────────────────
-  static async barberosTelefono(): Promise<{ barbero_id: string; nombre: string; telefono: string | null; whatsapp_activo: number }[]> {
+  static async barberosTelefono(): Promise<{ barbero_id: string; nombre: string; telefono: string | null; whatsapp_activo: boolean }[]> {
     return query(`
       SELECT b.id AS barbero_id, u.nombre, u.telefono, b.whatsapp_activo
       FROM   barberos b
       JOIN   usuarios u ON u.id = b.usuario_id
-      WHERE  b.activo = 1
+      WHERE  b.activo = TRUE
       ORDER  BY u.nombre
     `);
   }
@@ -173,7 +173,7 @@ export class WhatsAppService extends EventEmitter {
           JOIN   tipo_servicios ts ON ts.id = a.servicio_id
           JOIN   barberos br       ON br.id = a.barbero_id
           LEFT JOIN clientes c     ON c.id  = a.cliente_id
-          WHERE  a.barbero_id = ? AND DATE(a.inicio) = ?
+          WHERE  a.barbero_id = ? AND a.inicio::date = ?
             AND  a.estado IN ('confirmada', 'pendiente')
           ORDER  BY a.inicio ASC
         `, [b.barbero_id, fecha]);

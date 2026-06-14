@@ -67,7 +67,7 @@ export class WhatsAppController {
   static async toggleBarbero(req: Request, res: Response, next: NextFunction) {
     try {
       const { whatsapp_activo } = req.body as { whatsapp_activo: boolean };
-      await execute('UPDATE barberos SET whatsapp_activo = ? WHERE id = ?', [whatsapp_activo ? 1 : 0, req.params.id]);
+      await execute('UPDATE barberos SET whatsapp_activo = ? WHERE id = ?', [whatsapp_activo, req.params.id]);
       res.json({ status: 'success', data: { actualizado: true } });
     } catch (err) { next(err); }
   }
@@ -77,10 +77,11 @@ export class WhatsAppController {
     try {
       const { telefono } = req.body as { telefono: string };
       await execute(`
-        UPDATE usuarios u
-        JOIN   barberos b ON u.id = b.usuario_id
-        SET    u.telefono = ?
-        WHERE  b.id = ?
+        UPDATE usuarios
+        SET    telefono = ?
+        FROM   barberos
+        WHERE  barberos.usuario_id = usuarios.id
+          AND  barberos.id = ?
       `, [telefono || null, req.params.id]);
       res.json({ status: 'success', data: { actualizado: true } });
     } catch (err) { next(err); }
