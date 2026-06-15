@@ -78,7 +78,7 @@ export class AgendaService {
     if (solapamiento) throw new Error('El barbero ya tiene una cita en ese horario.');
 
     const id    = uuidv4();
-    const token = uuidv4().replace(/-/g, '').slice(0, 16);
+    const token = uuidv4().replace(/-/g, ''); // 32 chars hex — mayor entropía (2^128)
 
     await execute(`
       INSERT INTO agenda (id, cliente_id, barbero_id, servicio_id, inicio, fin, estado, precio_cop, metodo_pago, notas, token_confirmacion, created_by)
@@ -149,6 +149,21 @@ export class AgendaService {
       } catch {}
     }
     return sinToken.length;
+  }
+
+  // Endpoint exclusivo para la app móvil: resuelve el barbero desde el usuario autenticado
+  static async misCitas(usuarioId: string, fechaStr: string) {
+    const barbero = await queryOne<{ id: string }>(
+      'SELECT id FROM barberos WHERE usuario_id = ?',
+      [usuarioId],
+    );
+    if (!barbero) throw new Error('No se encontró perfil de barbero para este usuario.');
+    return query(`
+      SELECT ${CITA_SELECT}
+      ${CITA_JOINS}
+      WHERE a.barbero_id = ? AND a.inicio >= ? AND a.inicio <= ?
+      ORDER BY a.inicio ASC
+    `, [barbero.id, inicioDia(fechaStr), finDia(fechaStr)]);
   }
 
   static async actualizarEstado(id: string, estado: EstadoCita) {

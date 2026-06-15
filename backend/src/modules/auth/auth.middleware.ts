@@ -16,7 +16,7 @@ export async function verificarToken(req: AuthRequest, res: Response, next: Next
 
   const token = header.split(' ')[1];
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as UsuarioPayload;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!, { algorithms: ['HS256'] }) as UsuarioPayload;
     const usuario = await queryOne<UsuarioPayload & { activo: boolean }>(
       'SELECT id, nombre, email, rol, activo FROM usuarios WHERE id = ?',
       [decoded.id],

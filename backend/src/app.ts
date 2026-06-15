@@ -66,10 +66,20 @@ const loginLimiter = rateLimit({
   skipSuccessfulRequests: true,
 });
 
+// Protege las rutas públicas de confirmación de citas contra fuerza bruta
+const confirmarLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hora
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { status: 'error', message: 'Demasiadas solicitudes de confirmación. Intenta más tarde.' },
+});
+
 app.use(express.json({ limit: '50kb' }));
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
-app.use('/api/v1/auth/login', loginLimiter);
+app.use('/api/v1/auth/login',                loginLimiter);
+app.use('/api/v1/agenda/confirmar',          confirmarLimiter);
 app.use('/api/v1/auth',        authRouter);
 app.use('/api/v1/agenda',      agendaRouter);
 app.use('/api/v1/clientes',    clientesRouter);

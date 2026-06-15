@@ -78,6 +78,18 @@ export class AgendaController {
     }
   }
 
+  // Usado por la app móvil — devuelve solo las citas del barbero autenticado
+  static async misCitas(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const hoyStr = new Date().toISOString().split('T')[0];
+      const { fecha = hoyStr } = req.query as { fecha?: string };
+      const data = await AgendaService.misCitas(req.user!.id, fecha);
+      res.json({ status: 'success', data });
+    } catch (err: any) {
+      res.status(404).json({ status: 'error', message: err.message });
+    }
+  }
+
   static async recordatoriosPendientes(req: Request, res: Response, next: NextFunction) {
     try {
       const data = await AgendaService.recordatoriosPendientes();

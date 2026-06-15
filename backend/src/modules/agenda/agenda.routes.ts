@@ -11,6 +11,7 @@ router.patch('/confirmar/:token', AgendaController.confirmarPorToken);
 // Rutas protegidas
 router.use(verificarToken as any);
 
+router.get('/mis-citas',                 AgendaController.misCitas as any);
 router.get('/',                          AgendaController.listarPorFecha);
 router.get('/resumen',                   AgendaController.resumenDia);
 router.get('/recordatorios-pendientes',  AgendaController.recordatoriosPendientes);

@@ -62,15 +62,14 @@ export default function Agenda() {
   useEffect(() => {
     if (!usuario) return;
     setCargando(true);
-    api.get<Cita[]>(`/agenda?fecha=${fechaStr(fecha)}&barbero_id=${usuario.id}`)
+    // /mis-citas resuelve el barbero_id desde el JWT en el backend — evita filtrado client-side
+    api.get<Cita[]>(`/agenda/mis-citas?fecha=${fechaStr(fecha)}`)
       .then(data => setCitas(Array.isArray(data) ? data : []))
       .catch(() => setCitas([]))
       .finally(() => setCargando(false));
   }, [fecha, usuario]);
 
-  const misCitas = citas
-    .filter(c => c.barbero_id === usuario?.id)
-    .sort((a, b) => a.inicio.localeCompare(b.inicio));
+  const misCitas = [...citas].sort((a, b) => a.inicio.localeCompare(b.inicio));
 
   function abrirWhatsApp(cita: Cita) {
     if (!cita.cliente_telefono) return;

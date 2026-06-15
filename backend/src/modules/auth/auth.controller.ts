@@ -14,16 +14,15 @@ export class AuthController {
 
   static async login(req: Request, res: Response, next: NextFunction) {
     const { email, password } = req.body;
-    console.log(`Intento de inicio de sesión para: "${email}"`);
     if (!email || !password) {
       return res.status(400).json({ status: 'error', message: 'Correo y contraseña son requeridos.' });
     }
     try {
       const data = await AuthService.login({ email, password });
-      console.log(`Sesión iniciada con éxito para: "${email}"`);
       res.status(200).json({ status: 'success', data });
     } catch (err: any) {
-      console.error(`Error en inicio de sesión para "${email}":`, err.message);
+      // Sin PII en logs — solo la razón del fallo para auditoría interna
+      console.warn(`[auth] login fallido — ${err.message}`);
       res.status(401).json({ status: 'error', message: err.message });
     }
   }
