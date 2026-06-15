@@ -1,0 +1,289 @@
+/* ── Variables ─────────────────────────────── */
+:root {
+  --bg:        #0f0f17;
+  --surface:   #1a1a2e;
+  --surface2:  #22223b;
+  --accent:    #c9a96e;
+  --accent2:   #a07840;
+  --text:      #e8e8e8;
+  --text-muted:#9a9aaa;
+  --success:   #4ade80;
+  --warning:   #fbbf24;
+  --danger:    #f87171;
+  --radius:    12px;
+  --nav-h:     64px;
+}
+
+/* ── Reset ─────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+}
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; border: none; background: none; font: inherit; color: inherit; }
+input, textarea, select { font: inherit; color: inherit; }
+
+/* ── App shell ─────────────────────────────── */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: var(--nav-h);
+}
+
+/* ── Bottom nav ────────────────────────────── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-h);
+  background: var(--surface);
+  border-top: 1px solid #333;
+  display: flex;
+  align-items: stretch;
+  z-index: 100;
+}
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: var(--text-muted);
+  font-size: 11px;
+  transition: color 0.15s;
+}
+.nav-item.active { color: var(--accent); }
+.nav-item span { letter-spacing: 0.02em; }
+
+/* ── Login ─────────────────────────────────── */
+.login-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  padding: 1.5rem;
+  background: var(--bg);
+}
+.login-card {
+  width: 100%;
+  max-width: 380px;
+}
+.login-logo {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  color: var(--accent);
+}
+.login-logo h1 { font-size: 2rem; font-weight: 700; letter-spacing: 0.05em; }
+.login-logo p  { color: var(--text-muted); margin-top: 0.25rem; font-size: 0.9rem; }
+.login-form { display: flex; flex-direction: column; gap: 1rem; }
+.field { display: flex; flex-direction: column; gap: 0.4rem; }
+.field label { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+.field input {
+  padding: 0.85rem 1rem;
+  background: var(--surface);
+  border: 1px solid #333;
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.field input:focus { border-color: var(--accent); }
+.error-msg { color: var(--danger); font-size: 0.85rem; }
+.btn-primary {
+  margin-top: 0.5rem;
+  padding: 0.9rem;
+  background: var(--accent);
+  color: #0f0f17;
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: var(--radius);
+  transition: background 0.15s;
+}
+.btn-primary:disabled { opacity: 0.6; }
+
+/* ── Page base ─────────────────────────────── */
+.page { padding: 1rem; }
+
+/* ── Fecha nav ─────────────────────────────── */
+.fecha-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  gap: 0.5rem;
+}
+.fecha-label {
+  font-weight: 600;
+  font-size: 1rem;
+  text-align: center;
+  flex: 1;
+  text-transform: capitalize;
+}
+.icon-btn {
+  padding: 0.5rem;
+  border-radius: 8px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s, background 0.15s;
+}
+.icon-btn:hover { background: var(--surface2); color: var(--text); }
+.icon-btn.wa { color: #25d366; }
+
+/* ── Citas list ────────────────────────────── */
+.citas-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.cita-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-left: 3px solid var(--accent2);
+}
+.cita-card.estado-confirmada  { border-left-color: var(--success); }
+.cita-card.estado-pendiente   { border-left-color: var(--warning); }
+.cita-card.estado-cancelada   { border-left-color: var(--danger); opacity: 0.7; }
+.cita-hora {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 54px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.cita-estado {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-weight: 400;
+  margin-top: 2px;
+  text-transform: capitalize;
+}
+.estado-icon { flex-shrink: 0; }
+.estado-icon.confirmada { color: var(--success); }
+.estado-icon.pendiente  { color: var(--warning); }
+.estado-icon.completada { color: var(--accent); }
+.estado-icon.cancelada  { color: var(--danger); }
+.cita-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.9rem;
+}
+.cita-info strong { font-size: 1rem; }
+.cita-precio { color: var(--accent); font-weight: 600; font-size: 0.85rem; }
+.wa-btn {
+  color: #25d366;
+  padding: 0.4rem;
+  border-radius: 8px;
+  display: flex;
+}
+
+/* ── Search bar ────────────────────────────── */
+.search-bar {
+  position: relative;
+  margin-bottom: 1rem;
+}
+.search-bar .search-icon {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+.search-bar input {
+  width: 100%;
+  padding: 0.8rem 1rem 0.8rem 2.5rem;
+  background: var(--surface);
+  border: 1px solid #333;
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 1rem;
+  outline: none;
+}
+.search-bar input:focus { border-color: var(--accent); }
+
+/* ── Clientes list ─────────────────────────── */
+.clientes-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.cliente-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.cliente-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.9rem;
+  min-width: 0;
+}
+.cliente-info strong { font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cliente-tel  { color: var(--text-muted); font-size: 0.82rem; }
+.cliente-meta { color: var(--text-muted); font-size: 0.78rem; }
+.cliente-actions { display: flex; gap: 0.25rem; }
+
+/* ── Perfil ────────────────────────────────── */
+.perfil-mobile { display: flex; flex-direction: column; align-items: center; gap: 1.25rem; padding-top: 2rem; }
+.perfil-header  { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+.perfil-avatar  {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: var(--surface2);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+.perfil-header h2    { font-size: 1.4rem; font-weight: 700; }
+.perfil-rol          { text-transform: capitalize; color: var(--accent); font-size: 0.85rem; font-weight: 600; }
+.perfil-email        { color: var(--text-muted); font-size: 0.85rem; }
+.perfil-card {
+  width: 100%;
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 1rem;
+}
+.perfil-row {
+  display: flex; align-items: center; gap: 0.75rem;
+  color: var(--text-muted); font-size: 0.9rem;
+}
+.btn-logout {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.85rem 2rem;
+  background: var(--surface);
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-top: 1rem;
+  transition: background 0.15s;
+}
+.btn-logout:hover { background: rgba(248, 113, 113, 0.1); }
+
+/* ── Utilidades ────────────────────────────── */
+.loading-text  { text-align: center; color: var(--text-muted); padding: 2rem 0; font-size: 0.9rem; }
+.empty-state   { text-align: center; color: var(--text-muted); padding: 3rem 0; font-size: 0.95rem; }

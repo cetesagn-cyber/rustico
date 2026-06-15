@@ -1,94 +1,81 @@
 #!/bin/bash
-# Rústico BarberAdmin - Docker Helper Script (Linux/Mac)
-# Uso: ./rustico.sh [comando]
+# Rustico BarberAdmin - Docker Helper Script (Linux/Mac)
 
 cd infrastructure
 
 case "${1:-help}" in
   start)
-    echo "🚀 Iniciando Rústico BarberAdmin..."
+    echo "Iniciando Rustico BarberAdmin..."
     docker-compose up --build -d
     sleep 3
     echo ""
-    echo "✅ Servicios iniciados:"
-    echo "   🖥️  Frontend:  http://localhost"
-    echo "   🔌 Backend:   http://localhost:3001"
-    echo "   📧 Credenciales: admin@rustico.co / password"
+    echo "Servicios iniciados:"
+    echo "   Desktop (admin):     http://localhost:8082"
+    echo "   Mobile (barberos):   http://localhost:8083"
+    echo "   Backend API:         http://localhost:3002"
+    echo "   Credenciales:        admin@rustico.co / password"
     ;;
-  
   stop)
-    echo "⏹️  Deteniendo servicios..."
     docker-compose stop
-    echo "✅ Servicios detenidos"
     ;;
-  
   restart)
-    echo "🔄 Reiniciando servicios..."
     docker-compose restart
-    echo "✅ Servicios reiniciados"
     ;;
-  
-  logs)
-    docker-compose logs -f
-    ;;
-  
-  logs-backend)
-    docker-compose logs -f backend
-    ;;
-  
-  logs-frontend)
-    docker-compose logs -f frontend
-    ;;
-  
   build)
-    echo "🏗️  Reconstruyendo imágenes..."
     docker-compose build --no-cache
-    echo "✅ Imágenes reconstruidas"
     ;;
-  
   clean)
-    echo "🧹 Limpiando contenedores y volúmenes..."
     docker-compose down -v
-    echo "✅ Limpieza completada"
     ;;
-  
   ps)
     docker-compose ps
     ;;
-  
+  logs)
+    docker-compose logs -f
+    ;;
+  logs-backend)
+    docker-compose logs -f backend
+    ;;
+  logs-desktop)
+    docker-compose logs -f frontend-desktop
+    ;;
+  logs-mobile)
+    docker-compose logs -f frontend-mobile
+    ;;
   shell-backend)
-    echo "🐚 Abriendo terminal del backend..."
     docker-compose exec backend sh
     ;;
-  
-  shell-frontend)
-    echo "🐚 Abriendo terminal del frontend..."
-    docker-compose exec frontend sh
+  shell-desktop)
+    docker-compose exec frontend-desktop sh
     ;;
-  
+  shell-mobile)
+    docker-compose exec frontend-mobile sh
+    ;;
   health)
-    echo "🏥 Verificando salud del API..."
-    curl http://localhost:3001/api/health
+    curl http://localhost:3002/api/health
     echo ""
     ;;
-  
   *)
     echo ""
-    echo "💈 Rústico BarberAdmin - Docker Helper"
+    echo "Rustico BarberAdmin - Docker Helper"
     echo ""
-    echo "Comandos disponibles:"
-    echo "  ./rustico.sh start              - Inicia la aplicación"
-    echo "  ./rustico.sh stop               - Detiene la aplicación"
-    echo "  ./rustico.sh restart            - Reinicia servicios"
-    echo "  ./rustico.sh logs               - Ver logs en tiempo real"
-    echo "  ./rustico.sh logs-backend       - Ver logs del backend"
-    echo "  ./rustico.sh logs-frontend      - Ver logs del frontend"
-    echo "  ./rustico.sh build              - Reconstruir imágenes"
-    echo "  ./rustico.sh clean              - Elimina contenedores y volúmenes"
-    echo "  ./rustico.sh ps                 - Ver estado de contenedores"
-    echo "  ./rustico.sh shell-backend      - Abrir terminal del backend"
-    echo "  ./rustico.sh shell-frontend     - Abrir terminal del frontend"
-    echo "  ./rustico.sh health             - Verificar salud del API"
+    echo "Uso: ./rustico.sh [comando]"
+    echo ""
+    echo "Comandos:"
+    echo "  start              Inicia todos los servicios"
+    echo "  stop               Detiene todos los servicios"
+    echo "  restart            Reinicia servicios"
+    echo "  build              Reconstruye imagenes"
+    echo "  clean              Elimina contenedores y volumenes"
+    echo "  ps                 Estado de contenedores"
+    echo "  logs               Logs de todos los servicios"
+    echo "  logs-backend       Logs del backend"
+    echo "  logs-desktop       Logs del frontend desktop"
+    echo "  logs-mobile        Logs del frontend mobile"
+    echo "  shell-backend      Terminal del backend"
+    echo "  shell-desktop      Terminal del frontend desktop"
+    echo "  shell-mobile       Terminal del frontend mobile"
+    echo "  health             Verificar salud del API"
     echo ""
     ;;
 esac

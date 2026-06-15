@@ -1,110 +1,58 @@
 @echo off
-REM Rústico BarberAdmin - Docker Helper Script (Windows)
-REM Uso: rustico.bat [comando]
+REM Rustico BarberAdmin - Docker Helper Script (Windows)
 
 cd infrastructure
 
 IF "%1"=="" (
     ECHO.
-    ECHO 💈 Rústico BarberAdmin - Docker Helper
+    ECHO Rustico BarberAdmin - Docker Helper
     ECHO.
-    ECHO Comandos disponibles:
-    ECHO   rustico.bat start       - Inicia la aplicación
-    ECHO   rustico.bat stop        - Detiene la aplicación
-    ECHO   rustico.bat restart     - Reinicia servicios
-    ECHO   rustico.bat logs        - Ver logs en tiempo real
-    ECHO   rustico.bat logs-backend - Ver logs del backend
-    ECHO   rustico.bat logs-frontend - Ver logs del frontend
-    ECHO   rustico.bat build       - Reconstruir imágenes
-    ECHO   rustico.bat clean       - Elimina contenedores y volúmenes
-    ECHO   rustico.bat ps          - Ver estado de contenedores
-    ECHO   rustico.bat shell-backend - Abrir terminal del backend
-    ECHO   rustico.bat shell-frontend - Abrir terminal del frontend
-    ECHO   rustico.bat health      - Verificar salud del API
+    ECHO Comandos:
+    ECHO   rustico.bat start              - Inicia todos los servicios
+    ECHO   rustico.bat stop               - Detiene todos los servicios
+    ECHO   rustico.bat restart            - Reinicia servicios
+    ECHO   rustico.bat build              - Reconstruir imagenes
+    ECHO   rustico.bat clean              - Elimina contenedores y volumenes
+    ECHO   rustico.bat ps                 - Estado de contenedores
+    ECHO   rustico.bat logs               - Logs en tiempo real (todos)
+    ECHO   rustico.bat logs-backend       - Logs del backend
+    ECHO   rustico.bat logs-desktop       - Logs del frontend desktop
+    ECHO   rustico.bat logs-mobile        - Logs del frontend mobile
+    ECHO   rustico.bat shell-backend      - Terminal del backend
+    ECHO   rustico.bat shell-desktop      - Terminal del frontend desktop
+    ECHO   rustico.bat shell-mobile       - Terminal del frontend mobile
+    ECHO   rustico.bat health             - Verificar salud del API
     ECHO.
     GOTO end
 )
 
 IF "%1"=="start" (
-    ECHO 🚀 Iniciando Rústico BarberAdmin...
+    ECHO Iniciando Rustico BarberAdmin...
     docker-compose up --build -d
     timeout /t 3
     ECHO.
-    ECHO ✅ Servicios iniciados:
-    ECHO    🖥️  Frontend:  http://localhost
-    ECHO    🔌 Backend:   http://localhost:3001
-    ECHO    📧 Credenciales: admin@rustico.co / password
+    ECHO Servicios iniciados:
+    ECHO    Desktop (admin):     http://localhost:8082
+    ECHO    Mobile (barberos):   http://localhost:8083
+    ECHO    Backend API:         http://localhost:3002
+    ECHO    Credenciales:        admin@rustico.co / password
     GOTO end
 )
+IF "%1"=="stop"    ( docker-compose stop    & GOTO end )
+IF "%1"=="restart" ( docker-compose restart & GOTO end )
+IF "%1"=="build"   ( docker-compose build --no-cache & GOTO end )
+IF "%1"=="clean"   ( docker-compose down -v & GOTO end )
+IF "%1"=="ps"      ( docker-compose ps & GOTO end )
+IF "%1"=="logs"         ( docker-compose logs -f & GOTO end )
+IF "%1"=="logs-backend" ( docker-compose logs -f backend & GOTO end )
+IF "%1"=="logs-desktop" ( docker-compose logs -f frontend-desktop & GOTO end )
+IF "%1"=="logs-mobile"  ( docker-compose logs -f frontend-mobile  & GOTO end )
+IF "%1"=="shell-backend" ( docker-compose exec backend sh & GOTO end )
+IF "%1"=="shell-desktop" ( docker-compose exec frontend-desktop sh & GOTO end )
+IF "%1"=="shell-mobile"  ( docker-compose exec frontend-mobile sh  & GOTO end )
+IF "%1"=="health" ( curl http://localhost:3002/api/health & ECHO. & GOTO end )
 
-IF "%1"=="stop" (
-    ECHO ⏹️  Deteniendo servicios...
-    docker-compose stop
-    ECHO ✅ Servicios detenidos
-    GOTO end
-)
-
-IF "%1"=="restart" (
-    ECHO 🔄 Reiniciando servicios...
-    docker-compose restart
-    ECHO ✅ Servicios reiniciados
-    GOTO end
-)
-
-IF "%1"=="logs" (
-    docker-compose logs -f
-    GOTO end
-)
-
-IF "%1"=="logs-backend" (
-    docker-compose logs -f backend
-    GOTO end
-)
-
-IF "%1"=="logs-frontend" (
-    docker-compose logs -f frontend
-    GOTO end
-)
-
-IF "%1"=="build" (
-    ECHO 🏗️  Reconstruyendo imágenes...
-    docker-compose build --no-cache
-    ECHO ✅ Imágenes reconstruidas
-    GOTO end
-)
-
-IF "%1"=="clean" (
-    ECHO 🧹 Limpiando contenedores y volúmenes...
-    docker-compose down -v
-    ECHO ✅ Limpieza completada
-    GOTO end
-)
-
-IF "%1"=="ps" (
-    docker-compose ps
-    GOTO end
-)
-
-IF "%1"=="shell-backend" (
-    ECHO 🐚 Abriendo terminal del backend...
-    docker-compose exec backend sh
-    GOTO end
-)
-
-IF "%1"=="shell-frontend" (
-    ECHO 🐚 Abriendo terminal del frontend...
-    docker-compose exec frontend sh
-    GOTO end
-)
-
-IF "%1"=="health" (
-    ECHO 🏥 Verificando salud del API...
-    curl http://localhost:3001/api/health
-    ECHO.
-    GOTO end
-)
-
-ECHO ❌ Comando no reconocido: %1
+ECHO Comando no reconocido: %1
 ECHO Ejecuta "rustico.bat" sin argumentos para ver la ayuda.
 
 :end

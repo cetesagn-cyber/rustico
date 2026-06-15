@@ -45,19 +45,29 @@ services:
       timeout: 5s
       retries: 5
 
-  frontend:
+  frontend-desktop:
     build:
-      context: ../frontend
+      context: ../frontend-desktop
       dockerfile: Dockerfile
-    container_name: rustico_frontend
+    container_name: rustico_desktop
     restart: always
     depends_on:
       backend:
         condition: service_healthy
     ports:
       - "8082:80"
-    environment:
-      - REACT_APP_API_URL=http://localhost:3002
+
+  frontend-mobile:
+    build:
+      context: ../frontend-mobile
+      dockerfile: Dockerfile
+    container_name: rustico_mobile
+    restart: always
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "8083:80"
 
 volumes:
   mysql_data:
