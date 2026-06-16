@@ -16,7 +16,9 @@ const Admin    = () => <div>Página admin</div>;
 const Barbero  = () => <div>Página barbero</div>;
 const LoginPage = () => <div>Página login</div>;
 
-function renderWithRoute(initialPath: string, roles?: string[]) {
+type Rol = 'admin' | 'barbero' | 'recepcion';
+
+function renderWithRoute(initialPath: string, roles?: Rol[]) {
   return render(
     <MemoryRouter initialEntries={[initialPath]}>
       <Routes>
