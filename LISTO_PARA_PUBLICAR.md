@@ -3,9 +3,9 @@
 ## Estado para demo
 
 - Backend: Node/TypeScript + Express.
-- Frontend: React/Vite.
+- Apps: administracion React/Vite y app PWA de barberos.
 - Base local: MySQL/XAMPP en `rustico_prueba`.
-- Puertos locales reales: frontend `5180`, backend `3010`.
+- Puertos locales reales: administracion `5180`, app PWA `5181`, backend `3010`.
 - Usuario demo: `admin@rustico.co`.
 - Clave demo: `password`.
 
@@ -13,9 +13,10 @@
 
 1. Abrir XAMPP e iniciar MySQL.
 2. Ejecutar `start-backend.bat`.
-3. Ejecutar `start-frontend.bat`.
-4. Abrir http://localhost:5180.
-5. Verificar API en http://localhost:3010/api/health.
+3. Ejecutar `start-administracion.bat`.
+4. Ejecutar `start-app-pwa.bat` para revisar barberos.
+5. Abrir http://localhost:5180.
+6. Verificar API en http://localhost:3010/api/health.
 
 Si otra persona se conecta desde la misma red, usar el enlace con la IP del equipo y puerto `5180`, por ejemplo `http://192.168.0.9:5180`.
 
@@ -28,7 +29,12 @@ npm run migrate
 ```
 
 ```bash
-cd frontend
+cd apps/administracion
+npm run build
+```
+
+```bash
+cd apps/app-pwa
 npm run build
 ```
 
@@ -44,7 +50,7 @@ npm run build
 
 ## Migracion con Docker
 
-Docker levanta MySQL, backend y frontend juntos:
+Docker levanta MySQL, backend, administracion y app PWA juntos:
 
 ```bash
 cd infrastructure
@@ -53,7 +59,8 @@ docker-compose up --build -d
 
 URLs Docker:
 
-- Frontend: http://localhost:8082
+- Administracion: http://localhost:8082
+- App PWA barberos: http://localhost:8083
 - Backend API: http://localhost:3002
 - Health: http://localhost:3002/api/health
 - MySQL: localhost:3308

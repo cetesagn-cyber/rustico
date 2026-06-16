@@ -36,7 +36,7 @@ services:
       REFRESH_TOKEN_EXPIRY: 30d
       PORT: 3001
       NODE_ENV: production
-      FRONTEND_URL: http://localhost:8082
+      FRONTEND_URL: http://localhost:8082,http://localhost:8083
     ports:
       - "3002:3001"
     healthcheck:
@@ -45,11 +45,11 @@ services:
       timeout: 5s
       retries: 5
 
-  frontend-desktop:
+  administracion:
     build:
-      context: ../frontend-desktop
+      context: ../apps/administracion
       dockerfile: Dockerfile
-    container_name: rustico_desktop
+    container_name: rustico_administracion
     restart: always
     depends_on:
       backend:
@@ -57,11 +57,11 @@ services:
     ports:
       - "8082:80"
 
-  frontend-mobile:
+  app-pwa:
     build:
-      context: ../frontend-mobile
+      context: ../apps/app-pwa
       dockerfile: Dockerfile
-    container_name: rustico_mobile
+    container_name: rustico_app_pwa
     restart: always
     depends_on:
       backend:

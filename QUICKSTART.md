@@ -4,12 +4,14 @@
 
 1. Abre XAMPP e inicia MySQL.
 2. Ejecuta `start-backend.bat`.
-3. Ejecuta `start-frontend.bat`.
-4. Entra con `admin@rustico.co` / `password`.
+3. Ejecuta `start-administracion.bat`.
+4. Ejecuta `start-app-pwa.bat` si vas a revisar la app de barberos.
+5. Entra con `admin@rustico.co` / `password`.
 
 URLs locales:
 
-- Frontend: http://localhost:5180
+- Administracion: http://localhost:5180
+- App PWA barberos: http://localhost:5181
 - Backend API: http://localhost:3010
 - Health: http://localhost:3010/api/health
 
@@ -29,7 +31,12 @@ npm run dev
 ```
 
 ```bash
-cd frontend
+cd apps/administracion
+npm run dev
+```
+
+```bash
+cd apps/app-pwa
 npm run dev
 ```
 
@@ -42,7 +49,8 @@ docker-compose up --build -d
 
 URLs Docker:
 
-- Frontend: http://localhost:8082
+- Administracion: http://localhost:8082
+- App PWA barberos: http://localhost:8083
 - Backend API: http://localhost:3002
 - Health: http://localhost:3002/api/health
 - MySQL del contenedor: localhost:3308

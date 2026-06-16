@@ -32,8 +32,8 @@ coverage/
 
 # Build / Vite cache
 build/
-frontend/.vite/
-frontend-desktop/.vite/
+apps/administracion/.vite/
+apps/app-pwa/.vite/
 
 # Claude Code (configuración local del IDE)
 .claude/

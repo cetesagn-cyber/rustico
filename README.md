@@ -2,7 +2,7 @@
 
 <br/>
 
-<img src="frontend/public/logo-rustico.png" alt="Rústico Barber & Concept Shop" width="480"/>
+<img src="apps/administracion/public/logo-rustico.png" alt="Rústico Barber & Concept Shop" width="480"/>
 
 <br/><br/>
 
@@ -25,7 +25,7 @@
 
 ## Visión General
 
-**Rústico BarberAdmin** es el panel de administración propio de [Rústico Barber & Concept Shop](https://instagram.com/rusticobarbershop_official). Centraliza agenda, CRM de clientes, catálogo de servicios y productos, combos con descuentos, comisiones de barberos, financiero y estadísticas — todo en un solo sistema sin dependencias externas de pago.
+**Rústico BarberAdmin** es el sistema operativo propio de [Rústico Barber & Concept Shop](https://instagram.com/rusticobarbershop_official). El repositorio está organizado en dos apps: **administración** para agenda, CRM, catálogo, financiero y estadísticas; y **app PWA** para que los barberos trabajen desde el celular.
 
 > Desarrollado específicamente para operaciones en Colombia: formato de moneda COP, zona horaria `America/Bogota`, confirmaciones vía WhatsApp sin API externa.
 
@@ -100,28 +100,15 @@ Rustico/
 │           └── middlewares/
 │               └── error.handler.ts
 │
-├── frontend/
-│   └── src/
-│       ├── api/
-│       │   └── client.ts                   # Wrapper fetch (get/post/put/patch/delete)
-│       ├── components/
-│       │   ├── Layout.tsx                  # Shell con sidebar
-│       │   ├── Sidebar.tsx                 # Navegación lateral (paleta Marble & Sage)
-│       │   └── ProtectedRoute.tsx
-│       ├── pages/
-│       │   ├── Login.tsx
-│       │   ├── Dashboard.tsx
-│       │   ├── Agenda.tsx                  # Vista semanal + banner recordatorios WA
-│       │   ├── Clientes.tsx
-│       │   ├── Barberos.tsx
-│       │   ├── Catalogo.tsx                # Tabs: Servicios | Productos | Combos
-│       │   ├── Financiero.tsx
-│       │   ├── Estadisticas.tsx            # Gráficas recharts
-│       │   └── Confirmar.tsx               # Página pública /c/:token
-│       ├── store/
-│       │   └── auth.store.ts               # Zustand: usuario, token, login/logout
-│       ├── App.tsx                         # Router con rutas protegidas
-│       └── index.css                       # Variables CSS — paleta Marble & Sage
+├── apps/
+│   ├── administracion/                    # Panel admin/recepcion: agenda, CRM, catalogo, finanzas
+│   │   ├── src/
+│   │   ├── public/
+│   │   └── package.json
+│   └── app-pwa/                           # App instalable para barberos en celular
+│       ├── src/
+│       ├── public/
+│       └── package.json
 │
 └── README.md
 ```
@@ -178,15 +165,20 @@ npm run dev
 
 # ─── en otra terminal ───────────────────────────────────
 
-# 4. Instalar dependencias del frontend
-cd frontend
+# 4. Instalar dependencias de administracion
+cd apps/administracion
 npm install
 
-# 5. Arrancar el frontend (puerto 5173)
+# 5. Arrancar administracion (puerto 5180)
+npm run dev
+
+# 6. App PWA de barberos en otra terminal (puerto 5181)
+cd apps/app-pwa
+npm install
 npm run dev
 ```
 
-Abrir `http://localhost:5173` en el navegador.
+Abrir administración en `http://localhost:5180` y app PWA en `http://localhost:5181`.
 
 ### Credenciales de acceso (seed)
 
@@ -204,7 +196,7 @@ Archivo: `backend/.env`
 ```env
 PORT=3001
 NODE_ENV=development
-FRONTEND_URL=http://localhost:5173
+FRONTEND_URL=http://localhost:5180,http://localhost:5181
 
 JWT_SECRET=rustico-jwt-secret-cambia-en-produccion
 JWT_EXPIRES_IN=8h
@@ -324,10 +316,17 @@ npm run build     # Compilar TypeScript → dist/
 npm start         # Servidor producción desde dist/
 ```
 
-### Frontend (`cd frontend`)
+### Administracion (`cd apps/administracion`)
 ```bash
-npm run dev       # Dev server Vite con proxy a :3001 (puerto 5173)
+npm run dev       # Dev server Vite con proxy a :3001 (puerto 5180)
 npm run build     # Build de producción (tsc + vite build)
+npm run preview   # Preview del build de producción
+```
+
+### App PWA (`cd apps/app-pwa`)
+```bash
+npm run dev       # Dev server Vite con proxy a :3001 (puerto 5181)
+npm run build     # Build de producción PWA
 npm run preview   # Preview del build de producción
 ```
 

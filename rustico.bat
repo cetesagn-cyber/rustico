@@ -16,11 +16,11 @@ IF "%1"=="" (
     ECHO   rustico.bat ps                 - Estado de contenedores
     ECHO   rustico.bat logs               - Logs en tiempo real (todos)
     ECHO   rustico.bat logs-backend       - Logs del backend
-    ECHO   rustico.bat logs-desktop       - Logs del frontend desktop
-    ECHO   rustico.bat logs-mobile        - Logs del frontend mobile
+    ECHO   rustico.bat logs-admin         - Logs de administracion
+    ECHO   rustico.bat logs-pwa           - Logs de app PWA
     ECHO   rustico.bat shell-backend      - Terminal del backend
-    ECHO   rustico.bat shell-desktop      - Terminal del frontend desktop
-    ECHO   rustico.bat shell-mobile       - Terminal del frontend mobile
+    ECHO   rustico.bat shell-admin        - Terminal de administracion
+    ECHO   rustico.bat shell-pwa          - Terminal de app PWA
     ECHO   rustico.bat health             - Verificar salud del API
     ECHO.
     GOTO end
@@ -32,8 +32,8 @@ IF "%1"=="start" (
     timeout /t 3
     ECHO.
     ECHO Servicios iniciados:
-    ECHO    Desktop (admin):     http://localhost:8082
-    ECHO    Mobile (barberos):   http://localhost:8083
+    ECHO    Administracion:      http://localhost:8082
+    ECHO    App PWA barberos:    http://localhost:8083
     ECHO    Backend API:         http://localhost:3002
     ECHO    Credenciales:        admin@rustico.co / password
     GOTO end
@@ -45,11 +45,15 @@ IF "%1"=="clean"   ( docker-compose down -v & GOTO end )
 IF "%1"=="ps"      ( docker-compose ps & GOTO end )
 IF "%1"=="logs"         ( docker-compose logs -f & GOTO end )
 IF "%1"=="logs-backend" ( docker-compose logs -f backend & GOTO end )
-IF "%1"=="logs-desktop" ( docker-compose logs -f frontend-desktop & GOTO end )
-IF "%1"=="logs-mobile"  ( docker-compose logs -f frontend-mobile  & GOTO end )
+IF "%1"=="logs-admin"   ( docker-compose logs -f administracion & GOTO end )
+IF "%1"=="logs-pwa"     ( docker-compose logs -f app-pwa & GOTO end )
+IF "%1"=="logs-desktop" ( docker-compose logs -f administracion & GOTO end )
+IF "%1"=="logs-mobile"  ( docker-compose logs -f app-pwa & GOTO end )
 IF "%1"=="shell-backend" ( docker-compose exec backend sh & GOTO end )
-IF "%1"=="shell-desktop" ( docker-compose exec frontend-desktop sh & GOTO end )
-IF "%1"=="shell-mobile"  ( docker-compose exec frontend-mobile sh  & GOTO end )
+IF "%1"=="shell-admin"   ( docker-compose exec administracion sh & GOTO end )
+IF "%1"=="shell-pwa"     ( docker-compose exec app-pwa sh & GOTO end )
+IF "%1"=="shell-desktop" ( docker-compose exec administracion sh & GOTO end )
+IF "%1"=="shell-mobile"  ( docker-compose exec app-pwa sh & GOTO end )
 IF "%1"=="health" ( curl http://localhost:3002/api/health & ECHO. & GOTO end )
 
 ECHO Comando no reconocido: %1

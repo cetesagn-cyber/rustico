@@ -3,7 +3,7 @@
 ## Estado actual
 
 - Backend Node/TypeScript compilando correctamente.
-- Frontend React/Vite compilando correctamente.
+- Administracion React/Vite y app PWA compilando correctamente.
 - Base de datos local configurada para MySQL/XAMPP.
 - Seed de prueba probado en `rustico_prueba`.
 - Credenciales de prueba: `admin@rustico.co` / `password`.
@@ -21,7 +21,7 @@ DB_PASSWORD=
 DB_NAME=rustico_prueba
 PORT=3010
 NODE_ENV=development
-FRONTEND_URL=http://localhost:5180,http://127.0.0.1:5180,http://192.168.0.9:5180
+FRONTEND_URL=http://localhost:5180,http://127.0.0.1:5180,http://localhost:5181,http://127.0.0.1:5181,http://192.168.0.9:5180,http://192.168.0.9:5181
 ```
 
 3. Preparar base y datos:
@@ -35,12 +35,14 @@ npm run migrate
 
 ```bash
 start-backend.bat
-start-frontend.bat
+start-administracion.bat
+start-app-pwa.bat
 ```
 
 URLs:
 
-- Frontend: http://localhost:5180
+- Administracion: http://localhost:5180
+- App PWA barberos: http://localhost:5181
 - Backend API: http://localhost:3010
 - Health: http://localhost:3010/api/health
 
@@ -81,7 +83,8 @@ docker-compose up --build -d
 
 URLs Docker:
 
-- Frontend: http://localhost:8082
+- Administracion: http://localhost:8082
+- App PWA barberos: http://localhost:8083
 - Backend API: http://localhost:3002
 - Health: http://localhost:3002/api/health
 - MySQL: localhost:3308
@@ -95,7 +98,12 @@ npm run migrate
 ```
 
 ```bash
-cd frontend
+cd apps/administracion
+npm run build
+```
+
+```bash
+cd apps/app-pwa
 npm run build
 ```
 
