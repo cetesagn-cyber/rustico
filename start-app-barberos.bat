@@ -10,7 +10,7 @@ echo.
 echo Abre en tu celular: http://[IP-de-tu-PC]:5181
 echo.
 
-cd /d "C:\Users\Gnino\OneDrive - CEMENTOS TEQUENDAMA S.A.S. - CETESA S.A.S\Rustico\apps\app-barberos"
-npm run dev
+cd /d "C:\Users\Gnino\OneDrive - CEMENTOS TEQUENDAMA S.A.S. - CETESA S.A.S\Rustico"
+node scripts\serve-dist.mjs apps\app-barberos\dist 5181
 
 pause

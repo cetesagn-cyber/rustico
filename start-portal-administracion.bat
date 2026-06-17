@@ -8,7 +8,7 @@ echo Acceso: http://localhost:5180
 echo Backend: http://localhost:3010
 echo.
 
-cd /d "C:\Users\Gnino\OneDrive - CEMENTOS TEQUENDAMA S.A.S. - CETESA S.A.S\Rustico\apps\portal-administracion"
-npm run dev
+cd /d "C:\Users\Gnino\OneDrive - CEMENTOS TEQUENDAMA S.A.S. - CETESA S.A.S\Rustico"
+node scripts\serve-dist.mjs apps\portal-administracion\dist 5180
 
 pause
