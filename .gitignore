@@ -32,11 +32,12 @@ coverage/
 
 # Build / Vite cache
 build/
-apps/administracion/.vite/
-apps/app-pwa/.vite/
+apps/portal-administracion/.vite/
+apps/app-barberos/.vite/
 
 # Claude Code (configuración local del IDE)
 .claude/
 
 # Rustico carpeta legacy
 Rustico/
+assets/material-local/

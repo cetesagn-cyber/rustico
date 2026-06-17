@@ -10,12 +10,12 @@ export default function ProtectedRoute({ children }: Props) {
 
   if (!token) return <Navigate to="/login" replace />;
 
-  // La app móvil es exclusiva para barberos
+  // La app de barberos es exclusiva para ese rol.
   if (usuario && usuario.rol !== 'barbero') {
     return (
       <div style={{ padding: '2rem', textAlign: 'center', fontFamily: 'sans-serif' }}>
         <h2>Acceso restringido</h2>
-        <p>Esta app es para barberos. Usa la versión de escritorio para administración.</p>
+        <p>Esta app es para barberos. Usa el portal de administración para gestión interna.</p>
         <button onClick={() => useAuthStore.getState().logout()} style={{ marginTop: '1rem', padding: '0.5rem 1rem' }}>
           Cerrar sesión
         </button>

@@ -45,11 +45,11 @@ services:
       timeout: 5s
       retries: 5
 
-  administracion:
+  portal-administracion:
     build:
-      context: ../apps/administracion
+      context: ../apps/portal-administracion
       dockerfile: Dockerfile
-    container_name: rustico_administracion
+    container_name: rustico_portal_administracion
     restart: always
     depends_on:
       backend:
@@ -57,11 +57,11 @@ services:
     ports:
       - "8082:80"
 
-  app-pwa:
+  app-barberos:
     build:
-      context: ../apps/app-pwa
+      context: ../apps/app-barberos
       dockerfile: Dockerfile
-    container_name: rustico_app_pwa
+    container_name: rustico_app_barberos
     restart: always
     depends_on:
       backend:
