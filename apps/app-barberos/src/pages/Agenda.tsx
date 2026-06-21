@@ -19,7 +19,7 @@ interface Cita {
 }
 
 function fechaStr(d: Date) {
-  return d.toISOString().split('T')[0];
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
 function addDias(d: Date, n: number) {

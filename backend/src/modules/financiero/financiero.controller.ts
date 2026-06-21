@@ -12,9 +12,11 @@ export class FinancieroController {
   // ── Resúmenes ───────────────────────────────────────────────────────────────
   static async resumenPeriodo(req: Request, res: Response, next: NextFunction) {
     try {
-      const { fecha_inicio = hoy(), fecha_fin = hoy() } =
-        req.query as { fecha_inicio?: string; fecha_fin?: string };
-      const data = await FinancieroService.resumenPeriodo(fecha_inicio, fecha_fin);
+      const { fecha_inicio, fecha_fin, desde, hasta } =
+        req.query as { fecha_inicio?: string; fecha_fin?: string; desde?: string; hasta?: string };
+      const fi = fecha_inicio || desde || hoy();
+      const ff = fecha_fin || hasta || hoy();
+      const data = await FinancieroService.resumenPeriodo(fi, ff);
       res.json({ status: 'success', data });
     } catch (err) { next(err); }
   }

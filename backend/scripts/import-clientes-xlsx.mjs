@@ -2,7 +2,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import zlib from 'node:zlib';
 import crypto from 'node:crypto';
-import mysql from 'mysql2/promise';
+import { Client } from 'pg';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 const inputPath = process.argv.slice(2).find(arg => !arg.startsWith('--'));
 const dryRun = process.argv.includes('--dry-run');
@@ -214,46 +217,32 @@ async function main() {
 
   if (dryRun) return;
 
-  const connection = await mysql.createConnection({
-    host: process.env.DB_HOST || '127.0.0.1',
-    port: Number(process.env.DB_PORT || 3308),
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'rustico_prueba',
-  });
+  const connection = new Client({ connectionString: process.env.DATABASE_URL });
+  await connection.connect();
+  const run = (sql, params = []) => {
+    let n = 0;
+    return connection.query(sql.replace(/\?/g, () => `$${++n}`), params);
+  };
 
   let created = 0;
-  let updated = 0;
-
-  for (const client of valid) {
-    const [existingRows] = await connection.execute(
-      `SELECT id FROM clientes
-       WHERE (? IS NOT NULL AND telefono = ?) OR (? IS NOT NULL AND email = ?)
-       LIMIT 1`,
-      [client.telefono, client.telefono, client.email, client.email],
+  for (let start = 0; start < valid.length; start += 100) {
+    const batch = valid.slice(start, start + 100);
+    const params = [];
+    const values = batch.map((client, row) => {
+      const base = row * 6;
+      params.push(crypto.randomUUID(), client.nombre, client.telefono, client.email, client.notas_privadas, client.segmento);
+      return `($${base + 1}, $${base + 2}, $${base + 3}, $${base + 4}, $${base + 5}, $${base + 6})`;
+    }).join(', ');
+    const result = await connection.query(
+      `INSERT INTO clientes (id, nombre, telefono, email, notas_privadas, segmento)
+       VALUES ${values} ON CONFLICT DO NOTHING`,
+      params,
     );
-
-    if (existingRows.length) {
-      await connection.execute(
-        `UPDATE clientes
-         SET nombre = ?, telefono = COALESCE(?, telefono), email = COALESCE(?, email),
-             notas_privadas = ?, segmento = ?
-         WHERE id = ?`,
-        [client.nombre, client.telefono, client.email, client.notas_privadas, client.segmento, existingRows[0].id],
-      );
-      updated += 1;
-    } else {
-      await connection.execute(
-        `INSERT INTO clientes (id, nombre, telefono, email, notas_privadas, segmento)
-         VALUES (?, ?, ?, ?, ?, ?)`,
-        [crypto.randomUUID(), client.nombre, client.telefono, client.email, client.notas_privadas, client.segmento],
-      );
-      created += 1;
-    }
+    created += result.rowCount || 0;
   }
 
   await connection.end();
-  console.log(`Importacion completada. Creados: ${created}. Actualizados: ${updated}.`);
+  console.log(`Importacion completada. Creados: ${created}.`);
 }
 
 main().catch(error => {

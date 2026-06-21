@@ -12,9 +12,6 @@ const config: Config = {
   forceExit: true,
   detectOpenHandles: true,
   verbose: true,
-  ts: {
-    tsconfig: '<rootDir>/tsconfig.test.json',
-  },
   transform: {
     '^.+\\.tsx?$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.test.json' }],
   },

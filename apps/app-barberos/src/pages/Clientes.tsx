@@ -7,9 +7,11 @@ interface Cliente {
   nombre: string;
   telefono: string;
   email: string | null;
-  visitas: number;
-  ultima_visita: string | null;
+  total_visitas: number;
+  ultimo_servicio: string | null;
 }
+
+interface RespuestaClientes { clientes: Cliente[]; }
 
 export default function Clientes() {
   const [clientes, setClientes] = useState<Cliente[]>([]);
@@ -22,8 +24,8 @@ export default function Clientes() {
     debounceRef.current = setTimeout(() => {
       setCargando(true);
       const q = busqueda.trim() ? `?q=${encodeURIComponent(busqueda)}` : '';
-      api.get<Cliente[]>(`/clientes${q}`)
-        .then(data => setClientes(Array.isArray(data) ? data.slice(0, 30) : []))
+      api.get<RespuestaClientes>(`/clientes${q}`)
+        .then(data => setClientes(Array.isArray(data?.clientes) ? data.clientes.slice(0, 30) : []))
         .catch(() => setClientes([]))
         .finally(() => setCargando(false));
     }, 350);
@@ -61,9 +63,9 @@ export default function Clientes() {
             <div className="cliente-info">
               <strong>{c.nombre}</strong>
               <span className="cliente-tel">{c.telefono}</span>
-              {c.ultima_visita && (
+              {c.ultimo_servicio && (
                 <span className="cliente-meta">
-                  {c.visitas} visita{c.visitas !== 1 ? 's' : ''} · última {new Date(c.ultima_visita).toLocaleDateString('es-CO')}
+                  {c.total_visitas} visita{c.total_visitas !== 1 ? 's' : ''} · última {new Date(c.ultimo_servicio).toLocaleDateString('es-CO')}
                 </span>
               )}
             </div>

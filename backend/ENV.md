@@ -1,47 +1,53 @@
-# Rustico BarberAdmin - Configuracion de Desarrollo
+# Rustico BarberAdmin - Configuracion de entorno
 
-Anade estas variables de entorno en `backend/.env` para probar con MySQL de XAMPP:
+El backend actual usa PostgreSQL mediante `DATABASE_URL`.
+
+## Desarrollo local
+
+Crea `backend/.env` con valores equivalentes a estos:
 
 ```env
-# Base de datos - MySQL / XAMPP
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=
-DB_NAME=rustico_prueba
-
-# Seguridad JWT
-JWT_SECRET=rustico-jwt-secret-change-in-production-min-32chars
+DATABASE_URL=postgresql://postgres:password@localhost:5432/rustico
+JWT_SECRET=cambia-esto-por-un-secreto-seguro-de-al-menos-32-caracteres
 JWT_EXPIRY=8h
 REFRESH_TOKEN_EXPIRY=30d
-
-# Servidor
-PORT=3003
+PORT=3001
 NODE_ENV=development
-
-# Frontend URL
-FRONTEND_URL=http://localhost:5175
+FRONTEND_URL=http://localhost:5173
 ```
 
-Antes de iniciar el backend, abre el panel de XAMPP y enciende MySQL. El backend crea la base `rustico_prueba`, las tablas y datos de prueba automaticamente en la primera ejecucion.
+## Publicacion con Docker Compose
+
+Desde `infrastructure/`, crea un archivo `.env` basado en `.env.example`:
+
+```env
+POSTGRES_PASSWORD=cambia-esta-contrasena
+JWT_SECRET=cambia-esto-por-un-secreto-seguro-de-al-menos-32-caracteres
+FRONTEND_URL=https://tu-dominio-admin.com,https://tu-dominio-barberos.com
+```
+
+Luego ejecuta:
+
+```bash
+docker compose up -d --build
+```
 
 ## Scripts disponibles
 
-- `npm run dev` - Inicia en modo desarrollo con nodemon
-- `npm run build` - Compila TypeScript a JavaScript
-- `npm start` - Ejecuta la version compilada
-- `npm run migrate` - Crea/verifica esquema MySQL y datos iniciales
-- `npm run seed` - Verifica datos de prueba sin duplicarlos si ya existen
+- `npm run dev` - Inicia en modo desarrollo con nodemon.
+- `npm run build` - Compila TypeScript a JavaScript.
+- `npm start` - Ejecuta la version compilada.
+- `npm run migrate` - Aplica migraciones.
+- `npm run seed` - Verifica datos de prueba sin duplicarlos si ya existen.
 
 ## Variables importantes
 
 | Variable | Descripcion | Ejemplo |
 |----------|-------------|---------|
-| DB_HOST | Host de MySQL/XAMPP | localhost |
-| DB_PORT | Puerto de MySQL | 3306 |
-| DB_USER | Usuario de MySQL | root |
-| DB_PASSWORD | Contrasena de MySQL | vacio en XAMPP local |
-| DB_NAME | Base de datos de prueba | rustico_prueba |
-| JWT_SECRET | Clave para firmar tokens JWT, minimo 32 caracteres | rustico-... |
-| NODE_ENV | Entorno | development |
-| FRONTEND_URL | URL del frontend para CORS | http://localhost:5175 |
+| DATABASE_URL | Conexion PostgreSQL usada por el backend | postgresql://usuario:password@host:5432/rustico |
+| JWT_SECRET | Clave para firmar tokens JWT, minimo 32 caracteres | secreto-largo-generado |
+| JWT_EXPIRY | Duracion del token JWT | 8h |
+| REFRESH_TOKEN_EXPIRY | Duracion documentada para refresh tokens | 30d |
+| PORT | Puerto interno del backend | 3001 |
+| NODE_ENV | Entorno | production |
+| FRONTEND_URL | Origenes permitidos para CORS, separados por coma | https://admin.example.com |

@@ -41,3 +41,9 @@ apps/app-barberos/.vite/
 # Rustico carpeta legacy
 Rustico/
 assets/material-local/
+
+# Datos locales y respaldos: nunca publicar información de clientes ni motores embebidos
+DB/
+.pgdata-demo/
+*.bak
+*.backup

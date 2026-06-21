@@ -33,7 +33,7 @@ BEGIN
         FROM barberos WHERE id = NEW.barbero_id;
 
         v_monto   := ROUND((NEW.precio_cop * v_porcentaje) / 100);
-        v_periodo := TO_CHAR(NEW.inicio AT TIME ZONE 'America/Bogota', 'IYYY-IW');
+        v_periodo := TO_CHAR(NEW.inicio AT TIME ZONE 'America/Bogota', 'YYYY-MM');
 
         INSERT INTO comisiones (barbero_id, cita_id, monto_cop, porcentaje, periodo)
         VALUES (NEW.barbero_id, NEW.id, v_monto, v_porcentaje, v_periodo)

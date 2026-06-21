@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Calendar, Users, Scissors, LayoutDashboard, LogOut, User, TrendingUp, BarChart2, Tag, Wallet, MessageCircle, ShieldCheck } from 'lucide-react';
+import { Calendar, Users, Scissors, LayoutDashboard, LogOut, User, TrendingUp, BarChart2, Tag, Wallet, MessageCircle, ShieldCheck, KeyRound, X } from 'lucide-react';
 import { useAuthStore } from '../store/auth.store';
+import { api } from '../api/client';
 
 const NAV = [
   { to: '/',             icon: LayoutDashboard, label: 'Dashboard',    roles: ['admin', 'recepcion', 'barbero'] },
@@ -18,8 +20,22 @@ const NAV = [
 export default function Sidebar() {
   const { usuario, logout } = useAuthStore();
   const navigate = useNavigate();
+  const [passwordOpen, setPasswordOpen] = useState(false);
+  const [actual, setActual] = useState('');
+  const [nueva, setNueva] = useState('');
+  const [confirmacion, setConfirmacion] = useState('');
+  const [error, setError] = useState('');
+  const [guardando, setGuardando] = useState(false);
 
   const handleLogout = () => { logout(); navigate('/login'); };
+  const cerrarPassword = () => { setPasswordOpen(false); setActual(''); setNueva(''); setConfirmacion(''); setError(''); };
+  const guardarPassword = async () => {
+    if (nueva !== confirmacion) { setError('Las contraseñas no coinciden.'); return; }
+    setGuardando(true); setError('');
+    try { await api.post('/auth/password', { actual, password: nueva }); cerrarPassword(); }
+    catch (err: any) { setError(err.message || 'No se pudo actualizar la contraseña.'); }
+    finally { setGuardando(false); }
+  };
 
   return (
     <aside className="rustico-sidebar" style={{
@@ -117,6 +133,19 @@ export default function Sidebar() {
         </div>
         <button
           type="button"
+          onClick={() => setPasswordOpen(true)}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            width: '100%', padding: '8px 12px', borderRadius: 6, marginBottom: 7,
+            border: '1px solid rgba(255,255,255,0.10)',
+            background: 'rgba(255,255,255,0.035)', color: '#B9CEE2', fontSize: 13, transition: 'all 0.15s',
+          }}
+        >
+          <KeyRound size={14} />
+          Cambiar contraseña
+        </button>
+        <button
+          type="button"
           onClick={handleLogout}
           style={{
             display: 'flex', alignItems: 'center', gap: 8,
@@ -138,6 +167,26 @@ export default function Sidebar() {
           Cerrar sesión
         </button>
       </div>
+      {passwordOpen && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(10,20,34,.58)', display: 'grid', placeItems: 'center', padding: 20 }}>
+          <div style={{ width: '100%', maxWidth: 380, background: '#fff', borderRadius: 12, padding: 22, boxShadow: '0 20px 60px rgba(0,0,0,.28)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
+              <div><strong style={{ color: '#253F68' }}>Cambiar contraseña</strong><div style={{ color: '#718096', fontSize: 12, marginTop: 3 }}>Mantén tu acceso protegido.</div></div>
+              <button type="button" onClick={cerrarPassword} style={{ border: 0, background: 'transparent', color: '#718096', cursor: 'pointer' }}><X size={18} /></button>
+            </div>
+            {[['Contraseña actual', actual, setActual], ['Nueva contraseña', nueva, setNueva], ['Confirmar contraseña', confirmacion, setConfirmacion]].map(([label, value, setter]) => (
+              <label key={label as string} style={{ display: 'block', color: '#52657A', fontSize: 12, fontWeight: 600, marginBottom: 11 }}>{label as string}
+                <input type="password" value={value as string} onChange={e => (setter as (v: string) => void)(e.target.value)} style={{ width: '100%', boxSizing: 'border-box', marginTop: 5, padding: '9px 10px', borderRadius: 7, border: '1px solid #D9E1E8', outline: 'none' }} />
+              </label>
+            ))}
+            {error && <div style={{ color: '#B53A3A', fontSize: 12, marginBottom: 10 }}>{error}</div>}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 16 }}>
+              <button type="button" onClick={cerrarPassword} style={{ border: 0, background: 'transparent', color: '#61758A', cursor: 'pointer', padding: '8px 10px' }}>Cancelar</button>
+              <button type="button" onClick={guardarPassword} disabled={guardando} style={{ border: 0, borderRadius: 7, padding: '8px 12px', background: 'var(--verde)', color: '#fff', cursor: 'pointer' }}>{guardando ? 'Guardando…' : 'Actualizar'}</button>
+            </div>
+          </div>
+        </div>
+      )}
     </aside>
   );
 }

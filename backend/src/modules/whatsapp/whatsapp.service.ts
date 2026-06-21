@@ -153,7 +153,8 @@ export class WhatsAppService extends EventEmitter {
       FROM   barberos b
       JOIN   usuarios u ON u.id = b.usuario_id
       WHERE  b.activo = TRUE
-      ORDER  BY u.nombre
+      ORDER  BY CASE WHEN LOWER(u.nombre) = 'david casierra' THEN 0 ELSE 1 END,
+                u.nombre ASC
     `);
   }
 

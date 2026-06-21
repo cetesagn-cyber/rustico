@@ -287,3 +287,58 @@ input, textarea, select { font: inherit; color: inherit; }
 /* ── Utilidades ────────────────────────────── */
 .loading-text  { text-align: center; color: var(--text-muted); padding: 2rem 0; font-size: 0.9rem; }
 .empty-state   { text-align: center; color: var(--text-muted); padding: 3rem 0; font-size: 0.95rem; }
+
+/* Refinamiento visual: experiencia móvil Rústico */
+:root {
+  --bg: #101a2a;
+  --surface: rgba(29, 47, 73, .94);
+  --surface2: #263f62;
+  --accent: #e2aa47;
+  --accent2: #b77828;
+  --text: #f6f8fb;
+  --text-muted: #b2c2d4;
+  --radius: 16px;
+  --nav-h: 72px;
+}
+body {
+  background: radial-gradient(circle at 85% -10%, rgba(226,170,71,.20), transparent 30%),
+              radial-gradient(circle at 0% 30%, rgba(70,119,170,.20), transparent 35%), #101a2a;
+}
+.app-content { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom)); }
+.page { padding: 18px 16px 24px; max-width: 620px; margin: 0 auto; }
+.bottom-nav {
+  height: calc(var(--nav-h) + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  background: rgba(18, 31, 49, .88);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255,255,255,.10);
+  box-shadow: 0 -10px 30px rgba(0,0,0,.18);
+}
+.nav-item { position: relative; gap: 5px; font-size: 10px; font-weight: 600; letter-spacing: .03em; }
+.nav-item.active::before { content: ''; position: absolute; top: 7px; width: 26px; height: 3px; border-radius: 999px; background: var(--accent); box-shadow: 0 0 12px rgba(226,170,71,.65); }
+.login-screen { background: radial-gradient(circle at 80% 0%, rgba(226,170,71,.24), transparent 36%), linear-gradient(145deg, #10213a, #101a2a 62%); }
+.login-card { padding: 30px 24px; border: 1px solid rgba(255,255,255,.11); border-radius: 24px; background: rgba(22,38,60,.82); box-shadow: 0 24px 60px rgba(0,0,0,.32); backdrop-filter: blur(12px); }
+.login-logo { margin-bottom: 2rem; }
+.login-logo svg { padding: 11px; width: 62px; height: 62px; border-radius: 18px; background: linear-gradient(135deg, var(--accent), #f3c66f); color: #17263c; box-shadow: 0 10px 26px rgba(226,170,71,.24); }
+.login-logo h1 { margin-top: 12px; font-size: 2.25rem; letter-spacing: .08em; }
+.field input, .search-bar input { background: rgba(10,23,40,.58); border-color: rgba(255,255,255,.12); }
+.field input:focus, .search-bar input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(226,170,71,.13); }
+.btn-primary { background: linear-gradient(135deg, #efbc5e, #d49332); box-shadow: 0 10px 22px rgba(212,147,50,.25); color: #17263c; }
+.btn-primary:not(:disabled):active, .icon-btn:active, .wa-btn:active { transform: scale(.96); }
+.fecha-nav { padding: 7px 3px 14px; border-bottom: 1px solid rgba(255,255,255,.08); margin-bottom: 16px; }
+.fecha-label { font-size: 1.05rem; letter-spacing: .01em; }
+.icon-btn { background: rgba(255,255,255,.055); border: 1px solid rgba(255,255,255,.08); width: 38px; height: 38px; }
+.citas-list, .clientes-list { gap: 10px; }
+.cita-card, .cliente-card, .perfil-card { background: linear-gradient(135deg, rgba(39,63,96,.96), rgba(27,46,72,.96)); border: 1px solid rgba(255,255,255,.08); box-shadow: 0 8px 22px rgba(0,0,0,.12); }
+.cita-card { border-left-width: 4px; padding: 14px 13px; border-radius: 14px; }
+.cita-hora { color: var(--accent); min-width: 60px; font-size: .95rem; }
+.cita-info strong { letter-spacing: .01em; }
+.wa-btn { background: rgba(37,211,102,.11); border: 1px solid rgba(37,211,102,.22); }
+.cliente-card { padding: 13px 12px; border-radius: 14px; }
+.cliente-info strong { font-size: 1rem; }
+.cliente-actions .icon-btn { width: 36px; height: 36px; }
+.perfil-mobile { padding-top: 34px; }
+.perfil-avatar { width: 92px; height: 92px; background: linear-gradient(135deg, #304f78, #1e3354); border: 2px solid rgba(226,170,71,.58); box-shadow: 0 12px 30px rgba(0,0,0,.24); }
+.perfil-card { border-radius: 14px; }
+.btn-logout { width: 100%; justify-content: center; max-width: 360px; border-color: rgba(248,113,113,.55); background: rgba(248,113,113,.06); }
+.empty-state { margin-top: 28px; border: 1px dashed rgba(255,255,255,.16); border-radius: 16px; background: rgba(255,255,255,.025); }

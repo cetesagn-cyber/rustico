@@ -1,17 +1,18 @@
 services:
-  mysql:
-    image: mysql:8.4
-    container_name: rustico_mysql
+  postgres:
+    image: postgres:16-alpine
+    container_name: rustico_postgres
     restart: always
     environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-      MYSQL_DATABASE: rustico_prueba
+      POSTGRES_DB: rustico_db
+      POSTGRES_USER: rustico_admin
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Configura POSTGRES_PASSWORD en infrastructure/.env}
     ports:
-      - "3308:3306"
+      - "5433:5432"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD-SHELL", "pg_isready -U rustico_admin -d rustico_db"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -23,20 +24,16 @@ services:
     container_name: rustico_backend
     restart: always
     depends_on:
-      mysql:
+      postgres:
         condition: service_healthy
     environment:
-      DB_HOST: mysql
-      DB_PORT: 3306
-      DB_USER: root
-      DB_PASSWORD: ""
-      DB_NAME: rustico_prueba
-      JWT_SECRET: rustico-jwt-secret-change-in-production-min-32chars
+      DATABASE_URL: postgresql://rustico_admin:${POSTGRES_PASSWORD:?Configura POSTGRES_PASSWORD en infrastructure/.env}@postgres:5432/rustico_db
+      JWT_SECRET: ${JWT_SECRET:?Configura JWT_SECRET en infrastructure/.env}
       JWT_EXPIRY: 8h
       REFRESH_TOKEN_EXPIRY: 30d
       PORT: 3001
       NODE_ENV: production
-      FRONTEND_URL: http://localhost:8082,http://localhost:8083
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:8082,http://localhost:8083}
     ports:
       - "3002:3001"
     healthcheck:
@@ -70,4 +67,4 @@ services:
       - "8083:80"
 
 volumes:
-  mysql_data:
+  postgres_data:

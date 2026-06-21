@@ -23,7 +23,7 @@ export class ClientesService {
               ticket_promedio, ultimo_servicio, created_at
        FROM clientes
        WHERE (nombre ILIKE ? OR telefono ILIKE ? OR email ILIKE ?)
-         AND segmento LIKE ?
+         AND segmento::text ILIKE ?
          ${contactoSql}
        ORDER BY nombre ASC
        LIMIT ${safeLimit} OFFSET ${offset}`,
@@ -34,7 +34,7 @@ export class ClientesService {
       `SELECT COUNT(*) as total
        FROM clientes
        WHERE (nombre ILIKE ? OR telefono ILIKE ? OR email ILIKE ?)
-         AND segmento LIKE ?
+         AND segmento::text ILIKE ?
          ${contactoSql}`,
       [filtro, filtro, filtro, filtroSegmento],
     );

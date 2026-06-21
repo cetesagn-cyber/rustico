@@ -304,7 +304,11 @@ export async function initDatabase() {
   console.log('🔌 Conectando a PostgreSQL...');
   await aplicarMigraciones();
   console.log('✅ Migraciones aplicadas');
-  await aplicarSeed();
+  if (process.env.NODE_ENV !== 'production') {
+    await aplicarSeed();
+  } else {
+    console.log('ℹ️  Producción: seed demo omitido. Crea el primer administrador mediante un proceso seguro.');
+  }
 }
 
 // Ejecutar directamente: ts-node init-pg.ts

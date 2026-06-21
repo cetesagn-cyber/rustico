@@ -6,6 +6,7 @@ const router = Router();
 
 router.post('/login', AuthController.login);
 router.get('/me', verificarToken as any, AuthController.me as any);
+router.post('/password', verificarToken as any, AuthController.cambiarMiPassword as any);
 
 const auth  = verificarToken as any;
 const admin = requerirRol('admin') as any;

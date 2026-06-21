@@ -300,7 +300,7 @@ export class EstadisticasService {
       SELECT ROUND(AVG(dias_entre), 0) AS dias_promedio
       FROM (
         SELECT cliente_id,
-          EXTRACT(DAY FROM (MAX(inicio::date) - MIN(inicio::date)))
+          (MAX(inicio::date) - MIN(inicio::date))
             / NULLIF(COUNT(*) - 1, 0) AS dias_entre
         FROM agenda
         WHERE estado = 'completada' AND inicio::date >= ?

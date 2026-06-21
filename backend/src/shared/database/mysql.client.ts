@@ -1,6 +1,6 @@
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 dotenv.config();
 
@@ -31,11 +31,15 @@ export async function execute(sql: string, params: any[] = []): Promise<mysql.Re
   return result as mysql.ResultSetHeader;
 }
 
-export async function transaction<T>(fn: (conn: mysql.PoolConnection) => Promise<T>): Promise<T> {
+export async function transaction<T>(fn: (conn: { execute: (sql: string, params?: any[]) => Promise<void> }) => Promise<T>): Promise<T> {
   const conn = await pool.getConnection();
   await conn.beginTransaction();
   try {
-    const result = await fn(conn);
+    const result = await fn({
+      execute: async (sql: string, params: any[] = []) => {
+        await conn.execute(sql, params);
+      },
+    });
     await conn.commit();
     return result;
   } catch (err) {
@@ -46,4 +50,8 @@ export async function transaction<T>(fn: (conn: mysql.PoolConnection) => Promise
   }
 }
 
-export { uuidv4 };
+export async function closePool(): Promise<void> {
+  await pool.end();
+}
+
+export const uuidv4 = randomUUID;

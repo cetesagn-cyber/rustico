@@ -10,18 +10,21 @@ router.use(requerirRol('admin') as any);
 router.get('/resumen',              FinancieroController.resumenPeriodo);
 router.get('/resumen/mes',          FinancieroController.resumenMes);
 router.get('/evolucion/mensual',    FinancieroController.evolucionMensual);
+router.get('/mensual',              FinancieroController.evolucionMensual);
 router.get('/cierre',               FinancieroController.cierre);
 
 // ── Comisiones ────────────────────────────────────────────────────────────────
 router.get('/comisiones',            FinancieroController.listarComisiones);
 router.get('/comisiones/pendientes', FinancieroController.resumenComisionesPendientes);
 router.patch('/comisiones/pagar',    FinancieroController.pagarComisiones);
+router.post('/comisiones/pagar',     FinancieroController.pagarComisiones);
 
 // ── Gastos ────────────────────────────────────────────────────────────────────
 router.get('/gastos/categorias',            FinancieroController.categoriasGasto);
 router.get('/gastos',                       FinancieroController.listarGastos);
 router.post('/gastos',     FinancieroController.crearGasto);
 router.patch('/gastos/:id', FinancieroController.actualizarGasto);
+router.put('/gastos/:id',   FinancieroController.actualizarGasto);
 router.delete('/gastos/:id', FinancieroController.eliminarGasto);
 
 export default router;

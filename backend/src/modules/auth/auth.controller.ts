@@ -72,6 +72,15 @@ export class AuthController {
     }
   }
 
+  static async cambiarMiPassword(req: AuthRequest, res: Response) {
+    try {
+      const data = await AuthService.cambiarMiPassword(req.user!.id, req.body.actual, req.body.password);
+      res.json({ status: 'success', data });
+    } catch (err: any) {
+      res.status(400).json({ status: 'error', message: err.message });
+    }
+  }
+
   static async eliminar(req: AuthRequest, res: Response, next: NextFunction) {
     try {
       const data = await AuthService.eliminar(req.params.id, req.user!.id);

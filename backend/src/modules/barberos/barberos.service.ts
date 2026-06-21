@@ -25,7 +25,9 @@ const BARBERO_SELECT = `
 export class BarberosService {
   static async listar(incluirInactivos = false) {
     const where = incluirInactivos ? '' : 'WHERE b.activo = TRUE';
-    return query(`${BARBERO_SELECT} ${where} ORDER BY b.activo DESC, u.nombre ASC`);
+    return query(`${BARBERO_SELECT} ${where}
+      ORDER BY CASE WHEN LOWER(u.nombre) = 'david casierra' THEN 0 ELSE 1 END,
+               b.activo DESC, u.nombre ASC`);
   }
 
   static async crear(data: {
@@ -133,11 +135,11 @@ export class BarberosService {
     if (!barbero) throw new Error('Barbero no encontrado.');
 
     const citasActivas = await queryOne<any>(
-      `SELECT COUNT(*) as n FROM agenda WHERE barbero_id = ? AND estado IN ('pendiente','confirmada')`,
+      `SELECT COUNT(*) as n FROM agenda WHERE barbero_id = ?`,
       [id],
     );
     if (Number(citasActivas.n) > 0)
-      throw new Error(`Tiene ${citasActivas.n} cita(s) pendiente(s) o confirmada(s). Cancélalas o deshabílitalo primero.`);
+      throw new Error(`Tiene ${citasActivas.n} cita(s) en el historial. Desactívalo en lugar de eliminarlo.`);
 
     await transaction(async (conn) => {
       await conn.execute(`DELETE FROM comisiones WHERE barbero_id = ?`, [id]);

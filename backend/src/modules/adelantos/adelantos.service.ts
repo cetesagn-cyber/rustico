@@ -45,7 +45,8 @@ export class AdelantosService {
       ) ad ON ad.barbero_id = b.id
       WHERE b.activo = TRUE
       GROUP BY b.id, u.nombre, b.porcentaje_comision, b.color_agenda, ad.total_adelantos
-      ORDER BY u.nombre ASC
+      ORDER BY CASE WHEN LOWER(u.nombre) = 'david casierra' THEN 0 ELSE 1 END,
+               u.nombre ASC
     `, [fecha, fecha]);
 
     return rows.map(r => ({

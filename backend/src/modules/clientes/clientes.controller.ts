@@ -38,7 +38,8 @@ export class ClientesController {
       const data = await ClientesService.actualizar(req.params.id, req.body);
       res.json({ status: 'success', data });
     } catch (err: any) {
-      res.status(404).json({ status: 'error', message: err.message });
+      const status = err.message === 'Cliente no encontrado.' ? 404 : 400;
+      res.status(status).json({ status: 'error', message: err.message });
     }
   }
 

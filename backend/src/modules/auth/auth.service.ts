@@ -130,6 +130,17 @@ export class AuthService {
     return { ok: true };
   }
 
+  static async cambiarMiPassword(id: string, passwordActual: string, nuevaPassword: string) {
+    const u = await queryOne<any>('SELECT id, password_hash FROM usuarios WHERE id = ?', [id]);
+    if (!u || !await bcrypt.compare(passwordActual || '', u.password_hash)) {
+      throw new Error('La contraseña actual no es correcta.');
+    }
+    validarPassword(nuevaPassword);
+    const hash = await bcrypt.hash(nuevaPassword, SALT_ROUNDS);
+    await execute('UPDATE usuarios SET password_hash = ?, updated_at = NOW() WHERE id = ?', [hash, id]);
+    return { ok: true };
+  }
+
   static async eliminar(id: string, adminId: string) {
     if (id === adminId) throw new Error('No puedes eliminar tu propia cuenta.');
     const admins = await query<any>('SELECT id FROM usuarios WHERE rol = ? AND activo = TRUE', ['admin']);
